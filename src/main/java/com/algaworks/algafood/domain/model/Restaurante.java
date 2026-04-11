@@ -3,6 +3,7 @@ package com.algaworks.algafood.domain.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,6 +21,9 @@ public class Restaurante {
     @ManyToOne
     @JoinColumn(name = "cozinha_id") // padrao
     private Cozinha cozinha;
+
+    @OneToMany
+    private List<FormaPagamento> formaPagamento;
 
     public Long getId() {
         return id;

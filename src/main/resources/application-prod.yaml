@@ -1,0 +1,6 @@
+smtp:
+  host: smtp.algafood.com.br
+  port: 525
+
+server:
+  port: ${SERVER_PORTTT:80}

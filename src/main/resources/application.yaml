@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: algafood-api
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+  datasource:
+    username: algafood
+    password: algafood
+    url: jdbc:postgresql://172.30.120.234:5432/algafood
+#    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        hbm2ddl:
+          import_files: seed.sql
+smtp:
+  host: smtp.internal.default
+
+server:
+  port: ${SERVER_PORTTT:8081}

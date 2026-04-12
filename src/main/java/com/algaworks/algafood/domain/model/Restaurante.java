@@ -22,7 +22,7 @@ public class Restaurante {
     @JoinColumn(name = "cozinha_id") // padrao
     private Cozinha cozinha;
 
-    @OneToMany
+    @OneToMany(mappedBy = "restaurante")
     private List<FormaPagamento> formaPagamento;
 
     public Long getId() {

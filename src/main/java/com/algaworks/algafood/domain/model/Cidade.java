@@ -14,6 +14,10 @@ public class Cidade {
 
     private String nome;
 
+    @OneToOne
+    @JoinColumn(name = "estado_id")
+    private Estado estado;
+
     public Long getId() {
         return id;
     }

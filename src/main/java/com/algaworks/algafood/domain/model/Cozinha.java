@@ -1,17 +1,23 @@
 package com.algaworks.algafood.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
+@JsonRootName("cozinha")
 @Entity
 @Table(name = "tb_cozinha", schema = "public")
 public class Cozinha {
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonProperty("nome_cozinha") // alterando propriedades da representacao
     private String nome;
 
     public Long getId() {
@@ -24,6 +30,10 @@ public class Cozinha {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

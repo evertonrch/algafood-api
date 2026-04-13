@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.contract.CozinhasXMLContract;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import org.springframework.http.HttpStatus;
@@ -22,17 +23,17 @@ public class CozinhaController {
         this.cozinhaRepository = cozinhaRepository;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) // collection resource
+    @GetMapping // collection resource
     public List<Cozinha> listarJSON() {
         return cozinhaRepository.buscarTodos();
     }
 
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE) // content negotiation
-    public List<Cozinha> listarXML() {
-        return cozinhaRepository.buscarTodos();
+    public CozinhasXMLContract listarXML() {
+        return new CozinhasXMLContract(cozinhaRepository.buscarTodos());
     }
 
-    @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_YAML_VALUE}) // singleton resource
+    @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE}) // singleton resource
     public ResponseEntity<Cozinha> buscar(@PathVariable Long id) {
         var cozinha = cozinhaRepository.buscarPorId(id);
         if (Objects.isNull(cozinha)) {

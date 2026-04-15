@@ -31,6 +31,7 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
         return manager.find(Cozinha.class, id);
     }
 
+    @Transactional
     @Override
     public void remover(Cozinha entity) {
         manager.remove(entity);

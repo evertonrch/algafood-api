@@ -45,12 +45,20 @@ public class Restaurante {
         return taxaFrete;
     }
 
+    public void setTaxaFrete(BigDecimal taxaFrete) {
+        this.taxaFrete = taxaFrete;
+    }
+
     public Cozinha getCozinha() {
         return cozinha;
     }
 
     public List<FormaPagamento> getFormasPagamento() {
         return formasPagamento;
+    }
+
+    public void setFormasPagamento(List<FormaPagamento> formasPagamento) {
+        this.formasPagamento = formasPagamento;
     }
 
     @Override

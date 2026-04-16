@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record RestauranteResponse(
+        Long id,
         String nome,
         BigDecimal taxaFrete,
         Cozinha cozinha,
@@ -15,6 +16,6 @@ public record RestauranteResponse(
 ) {
 
     public RestauranteResponse(Restaurante restaurante) {
-        this(restaurante.getNome(), restaurante.getTaxaFrete(), restaurante.getCozinha(), restaurante.getFormasPagamento());
+        this(restaurante.getId(), restaurante.getNome(), restaurante.getTaxaFrete(), restaurante.getCozinha(), restaurante.getFormasPagamento());
     }
 }

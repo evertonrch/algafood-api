@@ -36,14 +36,32 @@ public class RestauranteService {
     }
 
     public Restaurante salvar(Restaurante restaurante) {
-        Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = cozinhaRepository.buscarPorId(cozinhaId);
-
-        if (Objects.isNull(cozinha)) {
-            throw new EntidadeNaoEncontradaException("cozinha com o id %d nao existe".formatted(cozinhaId));
-        }
-
+        Cozinha cozinha = validarCozinha(restaurante.getCozinha().getId());
         restaurante.setCozinha(cozinha);
         return restauranteRepository.salvar(restaurante);
+    }
+
+    public Restaurante atualizar(Restaurante existente, Restaurante restauranteAtualizado) {
+        if (restauranteAtualizado.getNome() != null) {
+            existente.setNome(restauranteAtualizado.getNome());
+        }
+        if (restauranteAtualizado.getTaxaFrete() != null) {
+            existente.setTaxaFrete(restauranteAtualizado.getTaxaFrete());
+        }
+        if (restauranteAtualizado.getCozinha().getId() != null) {
+            Cozinha cozinha = validarCozinha(restauranteAtualizado.getCozinha().getId());
+            existente.setCozinha(cozinha);
+        }
+
+        return restauranteRepository.salvar(existente);
+    }
+
+    private Cozinha validarCozinha(Long id) {
+        Cozinha cozinha = cozinhaRepository.buscarPorId(id);
+        if (Objects.isNull(cozinha)) {
+            throw new EntidadeNaoEncontradaException("cozinha com o id %d nao existe".formatted(id));
+        }
+
+        return cozinha;
     }
 }

@@ -23,10 +23,14 @@ public class Restaurante {
     private Cozinha cozinha;
 
     @OneToMany(mappedBy = "restaurante")
-    private List<FormaPagamento> formaPagamento;
+    private List<FormaPagamento> formasPagamento;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -45,6 +49,10 @@ public class Restaurante {
         return cozinha;
     }
 
+    public List<FormaPagamento> getFormasPagamento() {
+        return formasPagamento;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (!(o instanceof Restaurante that)) return false;
@@ -55,5 +63,9 @@ public class Restaurante {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    public void setCozinha(Cozinha cozinha) {
+        this.cozinha = cozinha;
     }
 }

@@ -5,4 +5,8 @@ public class EntidadeNaoEncontradaException extends RuntimeException {
     public EntidadeNaoEncontradaException(String mensagem, Throwable causa) {
         super(mensagem, causa);
     }
+
+    public EntidadeNaoEncontradaException(String mensagem) {
+        super(mensagem);
+    }
 }

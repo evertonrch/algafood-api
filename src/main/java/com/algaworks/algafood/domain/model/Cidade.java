@@ -26,6 +26,10 @@ public class Cidade {
         return nome;
     }
 
+    public Estado getEstado() {
+        return estado;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (!(o instanceof Cidade estado)) return false;

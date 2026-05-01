@@ -6,19 +6,27 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
 
     private final RestauranteService restauranteService;
+    private final ObjectMapper objectMapper;
 
-    public RestauranteController(RestauranteService restauranteService) {
+    public RestauranteController(RestauranteService restauranteService, ObjectMapper objectMapper) {
         this.restauranteService = restauranteService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping // collection resource
@@ -64,5 +72,30 @@ public class RestauranteController {
         } catch (RestauranteNaoEncontradoException ex) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> atualizarParcialmente(@PathVariable Long id, @RequestBody Map<String, Object> campos) {
+        Restaurante restauranteAtual = restauranteService.getRestaurantePorId(id);
+
+        if (Objects.isNull(restauranteAtual)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        merge(campos, restauranteAtual);
+
+        return atualizar(id, restauranteAtual);
+    }
+
+    private void merge(Map<String, Object> campos, Restaurante restauranteDestino) {
+        Restaurante dadosRestaurante = objectMapper.convertValue(campos, Restaurante.class);
+
+        campos.forEach((k, v) -> {
+            Field campo = ReflectionUtils.findField(Restaurante.class, k);
+            campo.setAccessible(true);
+
+            Object novoValor = ReflectionUtils.getField(campo, dadosRestaurante);
+            ReflectionUtils.setField(campo, restauranteDestino, novoValor);
+        });
     }
 }

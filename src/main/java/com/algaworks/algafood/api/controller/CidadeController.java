@@ -38,17 +38,18 @@ public class CidadeController {
                 .body(cidades);
     }
 
-    /**
-     * validar o estado que vem junto com a cidade, relacionamento 1 - 1, nao permiti que um estado faca parte
-     * de mais de uma cidade
-     */
-
     @PostMapping
     public ResponseEntity<Cidade> adicionar(@RequestBody Cidade cidade, UriComponentsBuilder uriBuilder) {
-        var salved = cidadeService.salvar(cidade);
+        try{
+            var salved = cidadeService.salvar(cidade);
 
-        URI location = uriBuilder.path("/cidades/{id}").buildAndExpand(salved.getId()).toUri();
-        return ResponseEntity.created(location).body(salved);
+            URI location = uriBuilder.path("/cidades/{id}").buildAndExpand(salved.getId()).toUri();
+            return ResponseEntity.created(location).body(salved);
+        } catch (EntidadeNaoEncontradaException ex) {
+            return ResponseEntity.badRequest().build();
+        } catch (EntidadeEmUsoException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     @PutMapping("/{id}")
@@ -65,6 +66,8 @@ public class CidadeController {
         return ResponseEntity.ok(cidadeAtual);
     }
 
+    // entidades que possuem relacionamento podem gerar conflito, pois existem uma constraint no banco,
+    // independente do tipo de relacionamento (1-1, 1-N ou N-N)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> remover(@PathVariable Long id) {
         try {

@@ -14,7 +14,7 @@ public class Cidade {
 
     private String nome;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "estado_id")
     private Estado estado;
 
@@ -28,6 +28,10 @@ public class Cidade {
 
     public Estado getEstado() {
         return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
 
     @Override

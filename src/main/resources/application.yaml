@@ -10,7 +10,7 @@ spring:
     username: algafood
     password: algafood
     url: jdbc:postgresql://172.30.120.234:5432/algafood
-#    driver-class-name: org.postgresql.Driver
+  #    driver-class-name: org.postgresql.Driver
 
   jpa:
     show-sql: true
@@ -21,6 +21,11 @@ spring:
       hibernate:
         hbm2ddl:
           import_files: seed.sql
+
+        dialect=org:
+          hibernate:
+            dialect:
+              PostgreSQLDialect: org.hibernate.dialect.PostgreSQLDialect
 smtp:
   host: smtp.internal.default
 

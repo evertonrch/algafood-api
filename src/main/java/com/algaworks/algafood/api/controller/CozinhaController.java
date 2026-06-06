@@ -65,6 +65,12 @@ public class CozinhaController {
                 .build();
     }
 
+    @GetMapping("/por-nome")
+    public ResponseEntity<?> buscarPorNome(@RequestParam String nome) {
+        List<Cozinha> cozinhas = cozinhaService.buscarPorNome(nome);
+        return ResponseEntity.ok(cozinhas);
+    }
+
     // como uma lista cozinhas, quero fazer um POST (adicionar) nessa lista
     @PostMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha, UriComponentsBuilder uriBuilder) {

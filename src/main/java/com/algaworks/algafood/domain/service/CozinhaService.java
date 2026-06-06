@@ -8,6 +8,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CozinhaService {
 
@@ -32,5 +34,9 @@ public class CozinhaService {
             throw new EntidadeEmUsoException("cozinha de id %d nao pode ser removida, pois esta em uso.".formatted(id), ex);
         }
 
+    }
+
+    public List<Cozinha> buscarPorNome(String nome) {
+        return cozinhaRepository.consultarPorNome(nome);
     }
 }

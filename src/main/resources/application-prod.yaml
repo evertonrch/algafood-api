@@ -3,4 +3,4 @@ smtp:
   port: 525
 
 server:
-  port: ${SERVER_PORTTT:80}
+  port: ${SERVER_PORT:80}

@@ -6,14 +6,15 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class RestauranteService {
+
+    private static final String COZINHA_NAO_EXISTE = "cozinha com o id %d nao existe.";
+    private static final String RESTAURANTE_NAO_EXISTE = "restaurante de id: %d nao existe";
 
     private final RestauranteRepository restauranteRepository;
     private final CozinhaRepository cozinhaRepository;
@@ -24,21 +25,18 @@ public class RestauranteService {
     }
 
     public List<Restaurante> listar() {
-        return restauranteRepository.buscarTodos();
+        return restauranteRepository.findAll();
     }
 
     public Restaurante getRestaurantePorId(Long id) {
-        try {
-            return restauranteRepository.buscarPorId(id);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new RestauranteNaoEncontradoException("restaurante de id: %d nao existe".formatted(id), ex);
-        }
+        return restauranteRepository.findById(id)
+                .orElseThrow(() -> new RestauranteNaoEncontradoException(RESTAURANTE_NAO_EXISTE.formatted(id)));
     }
 
     public Restaurante salvar(Restaurante restaurante) {
         Cozinha cozinha = validarCozinha(restaurante.getCozinha().getId());
         restaurante.setCozinha(cozinha);
-        return restauranteRepository.salvar(restaurante);
+        return restauranteRepository.save(restaurante);
     }
 
     public Restaurante atualizar(Restaurante existente, Restaurante restauranteAtualizado) {
@@ -53,15 +51,11 @@ public class RestauranteService {
             existente.setCozinha(cozinha);
         }
 
-        return restauranteRepository.salvar(existente);
+        return restauranteRepository.save(existente);
     }
 
     private Cozinha validarCozinha(Long id) {
-        Cozinha cozinha = cozinhaRepository.buscarPorId(id);
-        if (Objects.isNull(cozinha)) {
-            throw new EntidadeNaoEncontradaException("cozinha com o id %d nao existe".formatted(id));
-        }
-
-        return cozinha;
+        return cozinhaRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(COZINHA_NAO_EXISTE.formatted(id)));
     }
 }

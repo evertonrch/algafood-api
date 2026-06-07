@@ -5,4 +5,8 @@ public class RestauranteNaoEncontradoException extends RuntimeException {
     public RestauranteNaoEncontradoException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public RestauranteNaoEncontradoException(String message) {
+        super(message);
+    }
 }

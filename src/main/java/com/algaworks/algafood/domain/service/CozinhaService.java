@@ -13,6 +13,9 @@ import java.util.List;
 @Service
 public class CozinhaService {
 
+    private static final String ID_NAO_NULO = "nao existe cozinha com id: %d.";
+    private static final String ENTIDADE_EM_USO = "cozinha de id %d nao pode ser removida, pois esta em uso.";
+
     private final CozinhaRepository cozinhaRepository;
 
     public CozinhaService(CozinhaRepository cozinhaRepository) {
@@ -20,23 +23,23 @@ public class CozinhaService {
     }
 
     public Cozinha salvar(Cozinha cozinha) {
-        return cozinhaRepository.salvar(cozinha);
+        return cozinhaRepository.save(cozinha);
     }
 
     public void excluir(Long id) {
         try {
-            cozinhaRepository.remover(id);
+            cozinhaRepository.deleteById(id);
 
         } catch (EmptyResultDataAccessException ex) { // null entity
-            throw new EntidadeNaoEncontradaException("nao existe cozinha com id: %d.".formatted(id), ex);
+            throw new EntidadeNaoEncontradaException(ID_NAO_NULO.formatted(id), ex);
 
         } catch (DataIntegrityViolationException ex) { // foreign key constraint
-            throw new EntidadeEmUsoException("cozinha de id %d nao pode ser removida, pois esta em uso.".formatted(id), ex);
+            throw new EntidadeEmUsoException(ENTIDADE_EM_USO.formatted(id), ex);
         }
 
     }
 
-    public List<Cozinha> buscarPorNome(String nome) {
-        return cozinhaRepository.consultarPorNome(nome);
-    }
+//    public List<Cozinha> buscarPorNome(String nome) {
+//        return cozinhaRepository.consultarPorNome(nome);
+//    }
 }

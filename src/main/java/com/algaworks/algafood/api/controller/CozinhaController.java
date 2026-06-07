@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -34,22 +35,23 @@ public class CozinhaController {
     @GetMapping // collection resource (recurso que representa uma colecao de cozinhas)
     public List<Cozinha> listarJSON() {
         // para lista vazia o 200 ainda continua sendo a boa pratica em relacao ao 204
-        return cozinhaRepository.buscarTodos();
+        return cozinhaRepository.findAll();
     }
 
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE) // content negotiation
     public CozinhasXMLContract listarXML() {
-        return new CozinhasXMLContract(cozinhaRepository.buscarTodos());
+        return new CozinhasXMLContract(cozinhaRepository.findAll());
     }
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     // singleton resource
     public ResponseEntity<Cozinha> buscar(@PathVariable Long id) {
-        var cozinha = cozinhaRepository.buscarPorId(id);
-        if (Objects.isNull(cozinha)) {
+        var cozinha = cozinhaRepository.findById(id);
+        if (cozinha.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(cozinha);
+
+        return ResponseEntity.ok(cozinha.get());
     }
 
     @GetMapping("/follow")
@@ -65,11 +67,11 @@ public class CozinhaController {
                 .build();
     }
 
-    @GetMapping("/por-nome")
-    public ResponseEntity<?> buscarPorNome(@RequestParam String nome) {
-        List<Cozinha> cozinhas = cozinhaService.buscarPorNome(nome);
-        return ResponseEntity.ok(cozinhas);
-    }
+//    @GetMapping("/por-nome")
+//    public ResponseEntity<?> buscarPorNome(@RequestParam String nome) {
+//        List<Cozinha> cozinhas = cozinhaService.buscarPorNome(nome);
+//        return ResponseEntity.ok(cozinhas);
+//    }
 
     // como uma lista cozinhas, quero fazer um POST (adicionar) nessa lista
     @PostMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -82,19 +84,17 @@ public class CozinhaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Cozinha> atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
-        Cozinha cozinhaAtual = cozinhaRepository.buscarPorId(id);
+        Optional<Cozinha> cozinhaAtual = cozinhaRepository.findById(id);
 
-        if (Objects.isNull(cozinhaAtual)) {
+        if (cozinhaAtual.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
 //        // ignora id
-        BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+        BeanUtils.copyProperties(cozinha, cozinhaAtual.get(), "id");
 
-//        cozinha.setId(id);
-
-        cozinhaAtual = cozinhaRepository.salvar(cozinha);
-        return ResponseEntity.ok(cozinhaAtual);
+        Cozinha cozinhaSalva = cozinhaRepository.save(cozinha);
+        return ResponseEntity.ok(cozinhaSalva);
     }
 
     @DeleteMapping("/{id}")

@@ -7,13 +7,17 @@ import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CidadeService {
+
+    private static final String ID_NAO_EXISTE = "cidade de id: %d nao existe";
+    private static final String ESTADO_NAO_ENCONTRADO = "estado '%s' nao encontrado";
+    private static final String CIDADE_EM_USO = "cidade de id %d nao pode ser removida, pois esta em uso.";
 
     private final CidadeRepository cidadeRepository;
     private final EstadoRepository estadoRepository;
@@ -24,36 +28,30 @@ public class CidadeService {
     }
 
     public Cidade salvar(Cidade cidade) {
-        try {
-            Estado estado = estadoRepository.buscarPorId(cidade.getEstado().getId());
-            cidade.setEstado(estado);
-
-            return cidadeRepository.salvar(cidade);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new EntidadeNaoEncontradaException(String.format("estado '%s' nao encontrado", cidade.getEstado().getNome().toUpperCase()));
-        } catch (DataIntegrityViolationException ex) {
-            throw new EntidadeEmUsoException("estado ja em uso", ex);
+        Optional<Estado> estado = estadoRepository.findById(cidade.getEstado().getId());
+        if (estado.isEmpty()) {
+            throw new EntidadeNaoEncontradaException(String.format(ESTADO_NAO_ENCONTRADO, cidade.getNomeEstadoUpper()));
         }
+
+        cidade.setEstado(estado.get());
+        return cidadeRepository.save(cidade);
     }
 
     public List<Cidade> buscarTodos() {
-        return cidadeRepository.buscarTodos();
+        return cidadeRepository.findAll();
     }
 
     public Cidade buscarPorId(Long id) {
-        try {
-            return cidadeRepository.buscarPorId(id);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new EntidadeNaoEncontradaException("restaurante de id: %d nao existe".formatted(id), ex);
-        }
+        return cidadeRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(ID_NAO_EXISTE.formatted(id)));
     }
 
     public void excluir(Long id) {
         try {
             Cidade cidade = buscarPorId(id);
-            cidadeRepository.remover(cidade);
+            cidadeRepository.delete(cidade);
         } catch (DataIntegrityViolationException ex) {
-            throw new EntidadeEmUsoException("cozinha de id %d nao pode ser removida, pois esta em uso.".formatted(id), ex);
+            throw new EntidadeEmUsoException(CIDADE_EM_USO.formatted(id), ex);
         }
     }
 }

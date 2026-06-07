@@ -5,14 +5,14 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class EstadoService {
+
+    private static final String VIOLACAO_INTEGRIDADE = "nao foi possivel excluir esse estado, pois ele esta associado a outra entidade.";
 
     private final EstadoRepository estadoRepository;
 
@@ -21,26 +21,23 @@ public class EstadoService {
     }
 
     public List<Estado> buscarEstados() {
-        return estadoRepository.buscarTodos();
+        return estadoRepository.findAll();
     }
 
     public Estado salvar(Estado estado) {
-        return estadoRepository.salvar(estado);
+        return estadoRepository.save(estado);
     }
 
     public void remover(Estado estado) {
         try {
-            estadoRepository.remover(estado);
+            estadoRepository.delete(estado);
         } catch (DataIntegrityViolationException ex) {
-            throw new EntidadeEmUsoException("nao foi possivel excluir esse estado, pois ele esta associado a outra entidade.", ex);
+            throw new EntidadeEmUsoException(VIOLACAO_INTEGRIDADE, ex);
         }
     }
 
     public Estado buscarPorId(Long id) {
-        try {
-            return estadoRepository.buscarPorId(id);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new EntidadeNaoEncontradaException("estado nao encontrado");
-        }
+        return estadoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("estado nao encontrado"));
     }
 }

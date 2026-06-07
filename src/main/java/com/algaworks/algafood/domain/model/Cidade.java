@@ -34,6 +34,10 @@ public class Cidade {
         this.estado = estado;
     }
 
+    public String getNomeEstadoUpper() {
+        return getEstado().getNome().toUpperCase();
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (!(o instanceof Cidade estado)) return false;

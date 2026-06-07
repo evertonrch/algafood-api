@@ -8,6 +8,7 @@ import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -52,6 +53,14 @@ public class RestauranteService {
         }
 
         return restauranteRepository.save(existente);
+    }
+
+    public List<Restaurante> buscarPorTaxaFrete(BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        return restauranteRepository.findByTaxaFreteBetween(taxaInicial, taxaFinal);
+    }
+
+    public List<Restaurante> buscarRestaurantesPorCozinha(String cozinhaNome) {
+        return restauranteRepository.findByCozinhaNomeContaining(cozinhaNome);
     }
 
     private Cozinha validarCozinha(Long id) {

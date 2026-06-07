@@ -7,6 +7,7 @@ import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.coyote.Response;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -85,6 +88,19 @@ public class RestauranteController {
         merge(campos, restauranteAtual);
 
         return atualizar(id, restauranteAtual);
+    }
+
+    @GetMapping("por-cozinha")
+    public ResponseEntity<?> consultarRestaurantesDiferentesDe(@RequestParam String nome) {
+        List<Restaurante> restaurantes = restauranteService.buscarRestaurantesPorCozinha(nome.toUpperCase());
+        return ResponseEntity.ok(new RestaurantesResponse(restaurantes));
+    }
+
+    @GetMapping("por-taxa")
+    public ResponseEntity<?> buscarPorTaxaFrete(@RequestParam BigDecimal taxaInicial,
+                                                @RequestParam BigDecimal taxaFinal) {
+        List<Restaurante> restaurantes = restauranteService.buscarPorTaxaFrete(taxaInicial, taxaFinal);
+        return ResponseEntity.ok(new RestaurantesResponse(restaurantes));
     }
 
     private void merge(Map<String, Object> campos, Restaurante restauranteDestino) {

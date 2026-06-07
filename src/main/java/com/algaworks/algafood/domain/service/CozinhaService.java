@@ -39,7 +39,7 @@ public class CozinhaService {
 
     }
 
-//    public List<Cozinha> buscarPorNome(String nome) {
-//        return cozinhaRepository.consultarPorNome(nome);
-//    }
+    public List<Cozinha> buscarPorNome(String nome) {
+        return cozinhaRepository.findByNomeContaining(nome);
+    }
 }

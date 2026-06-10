@@ -77,4 +77,8 @@ public class RestauranteService {
     public List<Restaurante> obterTop2RestPorNome(String nome) {
         return restauranteRepository.findTop2ByNomeContaining(nome);
     }
+
+    public Integer obterContagemRestaurantesPorCozinha(Long cozinhaId) {
+        return restauranteRepository.countByCozinhaId(cozinhaId);
+    }
 }

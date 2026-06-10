@@ -111,6 +111,12 @@ public class RestauranteController {
         return ResponseEntity.ok(restaurantes);
     }
 
+    @GetMapping("contagem-por-cozinha")
+    public ResponseEntity<?> top2RestaurantesPorNome(@RequestParam Long id) {
+       Integer contagem = restauranteService.obterContagemRestaurantesPorCozinha(id);
+       return ResponseEntity.ok(contagem);
+    }
+
     @GetMapping("por-taxa")
     public ResponseEntity<?> buscarPorTaxaFrete(@RequestParam BigDecimal taxaInicial,
                                                 @RequestParam BigDecimal taxaFinal) {

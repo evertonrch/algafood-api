@@ -73,4 +73,8 @@ public class RestauranteService {
         return restauranteRepository.findFirstRestauranteByNomeContaining(nome)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(RESTAURANTE_NAO_EXISTE.formatted(nome)));
     }
+
+    public List<Restaurante> obterTop2RestPorNome(String nome) {
+        return restauranteRepository.findTop2ByNomeContaining(nome);
+    }
 }

@@ -105,6 +105,12 @@ public class RestauranteController {
         }
     }
 
+    @GetMapping("top2-por-nome")
+    public ResponseEntity<?> top2RestaurantesPorNome(@RequestParam String nome) {
+        List<Restaurante> restaurantes = restauranteService.obterTop2RestPorNome(nome);
+        return ResponseEntity.ok(restaurantes);
+    }
+
     @GetMapping("por-taxa")
     public ResponseEntity<?> buscarPorTaxaFrete(@RequestParam BigDecimal taxaInicial,
                                                 @RequestParam BigDecimal taxaFinal) {

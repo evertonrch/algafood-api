@@ -7,7 +7,6 @@ import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.coyote.Response;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -94,6 +93,16 @@ public class RestauranteController {
     public ResponseEntity<?> consultarRestaurantesDiferentesDe(@RequestParam String nome) {
         List<Restaurante> restaurantes = restauranteService.buscarRestaurantesPorCozinha(nome.toUpperCase());
         return ResponseEntity.ok(new RestaurantesResponse(restaurantes));
+    }
+
+    @GetMapping("primeiro-por-nome")
+    public ResponseEntity<?> obterPrimeiroRestaurantePorNome(@RequestParam String nome) {
+        try {
+            Restaurante restaurante = restauranteService.obterPrimeiroRestPorNome(nome);
+            return ResponseEntity.ok(restaurante);
+        } catch (EntidadeNaoEncontradaException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("por-taxa")

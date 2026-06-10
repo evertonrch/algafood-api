@@ -15,7 +15,8 @@ import java.util.List;
 public class RestauranteService {
 
     private static final String COZINHA_NAO_EXISTE = "cozinha com o id %d nao existe.";
-    private static final String RESTAURANTE_NAO_EXISTE = "restaurante de id: %d nao existe";
+    private static final String RESTAURANTE_ID_NAO_EXISTE = "restaurante de id: %d nao existe.";
+    private static final String RESTAURANTE_NAO_EXISTE = "restaurante com nome: '%s' nao encotrado.";
 
     private final RestauranteRepository restauranteRepository;
     private final CozinhaRepository cozinhaRepository;
@@ -31,7 +32,7 @@ public class RestauranteService {
 
     public Restaurante getRestaurantePorId(Long id) {
         return restauranteRepository.findById(id)
-                .orElseThrow(() -> new RestauranteNaoEncontradoException(RESTAURANTE_NAO_EXISTE.formatted(id)));
+                .orElseThrow(() -> new RestauranteNaoEncontradoException(RESTAURANTE_ID_NAO_EXISTE.formatted(id)));
     }
 
     public Restaurante salvar(Restaurante restaurante) {
@@ -66,5 +67,10 @@ public class RestauranteService {
     private Cozinha validarCozinha(Long id) {
         return cozinhaRepository.findById(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(COZINHA_NAO_EXISTE.formatted(id)));
+    }
+
+    public Restaurante obterPrimeiroRestPorNome(String nome) {
+        return restauranteRepository.findFirstRestauranteByNomeContaining(nome)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(RESTAURANTE_NAO_EXISTE.formatted(nome)));
     }
 }

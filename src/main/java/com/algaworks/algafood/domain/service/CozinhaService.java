@@ -39,6 +39,10 @@ public class CozinhaService {
 
     }
 
+    public boolean cozinhaExiste(String nome) {
+        return cozinhaRepository.existsByNome(nome);
+    }
+
     public List<Cozinha> buscarPorNome(String nome) {
         return cozinhaRepository.findByNomeContaining(nome);
     }

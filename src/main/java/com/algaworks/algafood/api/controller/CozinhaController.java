@@ -16,7 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,6 +70,15 @@ public class CozinhaController {
     public ResponseEntity<?> buscarPorNome(@RequestParam String nome) {
         List<Cozinha> cozinhas = cozinhaService.buscarPorNome(nome.toUpperCase());
         return ResponseEntity.ok(cozinhas);
+    }
+
+    @GetMapping("/existe")
+    public ResponseEntity<?> cozinhaExiste(@RequestParam String nome) {
+        if (cozinhaService.cozinhaExiste(nome.toUpperCase())) {
+            return ResponseEntity.status(200).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // como uma lista cozinhas, quero fazer um POST (adicionar) nessa lista

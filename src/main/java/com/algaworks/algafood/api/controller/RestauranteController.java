@@ -105,6 +105,13 @@ public class RestauranteController {
         }
     }
 
+    @GetMapping("por-nome")
+    public ResponseEntity<?> porNome(@RequestParam String nome, @RequestParam("cozinha_id") Long cozinhaId) {
+        List<Restaurante> restaurantes = restauranteService.consultarPorNome(nome, cozinhaId);
+        return ResponseEntity.ok(restaurantes);
+    }
+
+
     @GetMapping("top2-por-nome")
     public ResponseEntity<?> top2RestaurantesPorNome(@RequestParam String nome) {
         List<Restaurante> restaurantes = restauranteService.obterTop2RestPorNome(nome);
